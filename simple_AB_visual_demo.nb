@@ -1,0 +1,2328 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[     97816,       2319]
+NotebookOptionsPosition[     92264,       2136]
+NotebookOutlinePosition[     92649,       2153]
+CellTagsIndexPosition[     92606,       2150]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["One to one catalytic reaction - Visual Demo.", "Title",
+ CellChangeTimes->{{3.596831866598876*^9, 3.5968318869742413`*^9}, {
+  3.6142636989923973`*^9, 3.614263699246945*^9}, {3.640205297793027*^9, 
+  3.640205298958108*^9}, {3.640803791931113*^9, 3.64080379631472*^9}, {
+  3.640974197522505*^9, 3.640974198690666*^9}, {3.6409742355137367`*^9, 
+  3.64097423780963*^9}}],
+
+Cell["\<\
+KMC simulation of discrete hopping in a one dimensional pore of length L. It \
+inlcudes hopping particles with different rates, with possible exchange \
+rates, and A\[LongRightArrow]B reaction. The parameters for the simulation \
+can be changed in the \[OpenCurlyDoubleQuote]Definition of Variables\
+\[CloseCurlyDoubleQuote] section. However, for it to work, just running the \
+whole notebook will suffice.\
+\>", "Text",
+ CellChangeTimes->{{3.596831889215653*^9, 3.596831939892761*^9}, {
+  3.614263705876137*^9, 3.6142637207644053`*^9}, {3.6402053050351467`*^9, 
+  3.6402053220051727`*^9}, {3.6408038105887456`*^9, 3.6408038443472047`*^9}, {
+  3.6409742025547028`*^9, 3.6409742979360037`*^9}, {3.697155155788054*^9, 
+  3.697155209367662*^9}, {3.712579955202956*^9, 3.712579960231401*^9}}],
+
+Cell["\<\
+Author: Andres Garcia
+Revision: 32
+Date: August 24, 2017, 11:13\
+\>", "Text",
+ CellChangeTimes->{{3.5968319469245977`*^9, 3.596832000658572*^9}, {
+  3.64097439335279*^9, 3.640974406511442*^9}, {3.712579873348378*^9, 
+  3.712579905289262*^9}, {3.712579967026924*^9, 3.712579967559146*^9}, {
+  3.712580098581923*^9, 3.712580099299137*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Definition of Variables", "Subtitle",
+ CellChangeTimes->{{3.596831766323618*^9, 3.59683178297042*^9}, 
+   3.596832024788506*^9}],
+
+Cell[CellGroupData[{
+
+Cell["Input Variables", "Section",
+ CellChangeTimes->{{3.5968320133159657`*^9, 3.596832037409246*^9}}],
+
+Cell["Length of the pore being considered.", "Text",
+ CellChangeTimes->{{3.596831614230476*^9, 3.596831621285667*^9}, 
+   3.596835053341037*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"PORELEN", "=", "50"}], ";"}]], "Input",
+ CellChangeTimes->{{3.596831589838979*^9, 3.5968316093268757`*^9}, 
+   3.5968321095599747`*^9, 3.640863738096527*^9, 3.640951400529249*^9}],
+
+Cell["Exchange probability", "Text",
+ CellChangeTimes->{{3.640965854604485*^9, 3.640965857468608*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"pex", "=", "0.0"}], ";"}]], "Input",
+ CellChangeTimes->{{3.640965858779368*^9, 3.640965861661282*^9}, 
+   3.6409842844364557`*^9}],
+
+Cell["Hop rate of particles.", "Text",
+ CellChangeTimes->{{3.596832270361669*^9, 3.596832273725595*^9}, 
+   3.596832337075025*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"hopRateA", "=", "1.0"}], ";"}]], "Input",
+ CellChangeTimes->{{3.596832203735807*^9, 3.596832213144039*^9}, {
+  3.640201396822898*^9, 3.640201422668868*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"hopRateB", "=", "1.0"}], ";"}]], "Input",
+ CellChangeTimes->{
+  3.6402015773729887`*^9, 3.6408076654959164`*^9, {3.640862911812059*^9, 
+   3.6408629119249477`*^9}, {3.640952893968883*^9, 3.640952900128401*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"hopRateEx", "=", 
+   RowBox[{"pex", "*", 
+    RowBox[{"Min", "[", 
+     RowBox[{"hopRateA", ",", "hopRateB"}], "]"}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.640965833381116*^9, 3.640965833643353*^9}, {
+  3.640965865919194*^9, 3.640965879768948*^9}}],
+
+Cell["Reaction rate", "Text",
+ CellChangeTimes->{{3.6409621820573273`*^9, 3.640962185168055*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"rxnRate", " ", "=", " ", "0.01"}], ";"}]], "Input",
+ CellChangeTimes->{{3.640962186726625*^9, 3.6409621906004066`*^9}, {
+   3.6409628865731497`*^9, 3.640962886595804*^9}, 3.640964165684966*^9, {
+   3.640964553366047*^9, 3.6409645535262327`*^9}, 3.640967825622864*^9, 
+   3.640968232843643*^9}],
+
+Cell["\<\
+Concentration outside the pore of each specie and total concentration.\
+\>", "Text",
+ CellChangeTimes->{{3.5968323555625467`*^9, 3.596832362882012*^9}, 
+   3.596832409636201*^9, {3.614258867971899*^9, 3.614258873969577*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"xEquilA", "=", "0.8"}], ";"}]], "Input",
+ CellChangeTimes->{{3.596832352284594*^9, 3.596832371395049*^9}, {
+   3.614258839654118*^9, 3.614258842955854*^9}, {3.6142589443383713`*^9, 
+   3.6142589446966343`*^9}, 3.6408629157984743`*^9, 3.6409515066754017`*^9, 
+   3.640952911000242*^9, {3.640956949040721*^9, 3.640956949403946*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"xEquilB", "=", "0.0"}], ";"}]], "Input",
+ CellChangeTimes->{{3.6142588448384132`*^9, 3.6142588519792757`*^9}, 
+   3.6408629201968393`*^9, 3.6409515086857357`*^9, {3.640952902240529*^9, 
+   3.640952908144039*^9}, {3.64095695192789*^9, 3.640956952179969*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"xEquil", "=", 
+   RowBox[{"xEquilA", "+", "xEquilB"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.614258853527801*^9, 3.6142588619724092`*^9}, {
+   3.614259146624545*^9, 3.614259150632642*^9}, 3.640199486169787*^9, 
+   3.640201791443965*^9}]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Parameter Variables", "Section",
+ CellChangeTimes->{{3.596831677574813*^9, 3.596831719788561*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Number", " ", "of", " ", "type", " ", "of", " ", 
+  RowBox[{"atoms", "."}]}]], "Text",
+ CellChangeTimes->{{3.596831454382509*^9, 3.5968314769643106`*^9}, 
+   3.596835060253578*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"NATOMTYPES", "=", " ", "2"}], ";"}], " "}]], "Input",
+ CellChangeTimes->{{3.596831427442987*^9, 3.596831436140972*^9}, {
+   3.5968334385049686`*^9, 3.596833441592798*^9}, {3.614258936858694*^9, 
+   3.614258937000246*^9}, 3.640199493986847*^9}],
+
+Cell["\<\
+Name used for types of atoms, empty atoms are 0, type A atoms are 1 and type \
+B atoms are 2.\
+\>", "Text",
+ CellChangeTimes->{{3.5968314851149817`*^9, 3.596831518457149*^9}, 
+   3.5968350580024633`*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"EMPTY", "=", "3"}], ";"}]], "Input",
+ CellChangeTimes->{{3.596831532542861*^9, 3.5968315379539423`*^9}, 
+   3.596832113135695*^9, {3.640204894428713*^9, 3.640204894643538*^9}, 
+   3.640204935926037*^9, 3.640204982380473*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"AA", "=", "1"}], ";"}]], "Input",
+ CellChangeTimes->{{3.5968315210651007`*^9, 3.5968315245776854`*^9}, 
+   3.596834670422977*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"BB", "=", "2"}], ";"}]], "Input",
+ CellChangeTimes->{{3.596831526569777*^9, 3.596831551321237*^9}, 
+   3.5968346722695847`*^9, {3.6142589227710457`*^9, 3.614258930105588*^9}}],
+
+Cell["\<\
+Number of types of moves ( 2 end moves, 2 swap move (1 move * 2 particles))+1 \
+reaction + 1 exchange.\
+\>", "Text",
+ CellChangeTimes->{{3.596831553768174*^9, 3.596831557903754*^9}, 
+   3.596835055402439*^9, {3.640202521129506*^9, 3.64020255242315*^9}, {
+   3.640204166307741*^9, 3.640204171370348*^9}, {3.6408000881414075`*^9, 
+   3.640800098250225*^9}, {3.640962611438583*^9, 3.640962614302569*^9}, {
+   3.640965934938161*^9, 3.640965939791841*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"NMOVETYPES", "=", 
+   RowBox[{"2", "+", "2", "+", "1", "+", "1"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.596831559698433*^9, 3.5968316064790077`*^9}, 
+   3.640202555161706*^9, {3.6402041617729883`*^9, 3.6402041619873123`*^9}, {
+   3.6408001051142373`*^9, 3.640800107766242*^9}, {3.640962607450643*^9, 
+   3.6409626076793413`*^9}, {3.640965713479562*^9, 3.640965713711224*^9}}]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Non-parameter Variables", "Section",
+ CellChangeTimes->{{3.596831546051024*^9, 3.59683154767293*^9}, {
+  3.596831694554531*^9, 3.596831731388423*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Scalars", "Subsection",
+ CellChangeTimes->{{3.596833386610682*^9, 3.5968334007337*^9}, {
+  3.6408105608610015`*^9, 3.640810562031004*^9}}],
+
+Cell["Elapsed time and time start.", "Text",
+ CellChangeTimes->{{3.5968350049128857`*^9, 3.59683504281107*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"time", "=", "0.0"}], ";"}]], "Input",
+ CellChangeTimes->{{3.596835010455593*^9, 3.596835012288336*^9}, {
+  3.6408002579321055`*^9, 3.640800258150506*^9}}],
+
+Cell["Number of swap moves from wich to choose from.", "Text",
+ CellChangeTimes->{{3.596832683007719*^9, 3.596832693127617*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"nSwapMovesA", "=", "0"}], ";"}]], "Input",
+ CellChangeTimes->{{3.596832121253389*^9, 3.596832127767226*^9}, {
+  3.6402022800951366`*^9, 3.640202295597891*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"nSwapMovesB", "=", "0"}], ";"}]], "Input",
+ CellChangeTimes->{3.6402026689564543`*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"nSwapMovesEx", "=", "0"}], ";"}]], "Input",
+ CellChangeTimes->{{3.640965730061768*^9, 3.64096573038171*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"nRxnMoves", "=", "0"}], ";"}]], "Input",
+ CellChangeTimes->{{3.640962265353838*^9, 3.640962271968823*^9}}],
+
+Cell["System rates: Adsorption, desorption and total system rate.", "Text",
+ CellChangeTimes->{{3.596832755392585*^9, 3.5968327989987497`*^9}, 
+   3.596835086011364*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"adsorbRate", "=", 
+   RowBox[{
+    RowBox[{"hopRateA", "*", "xEquilA"}], " ", "+", " ", 
+    RowBox[{"hopRateB", "*", "xEquilB"}]}]}], " ", ";"}]], "Input",
+ CellChangeTimes->{{3.5968321507458687`*^9, 3.596832158361863*^9}, {
+   3.596835744760952*^9, 3.596835799365582*^9}, 3.6402014244622393`*^9, {
+   3.640201620274173*^9, 3.640201633833209*^9}, {3.640201674755369*^9, 
+   3.640201690611431*^9}, 3.640201965421029*^9, 3.640800226966051*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"desorbRateA", "=", 
+   RowBox[{
+    RowBox[{"hopRateA", "*", 
+     RowBox[{"(", 
+      RowBox[{"1", "-", "xEquil"}], ")"}]}], "+", 
+    RowBox[{"hopRateEx", "*", "xEquilB"}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.5968321616344967`*^9, 3.596832166713678*^9}, {
+   3.596835755199264*^9, 3.5968357924702997`*^9}, 3.640201425580875*^9, 
+   3.6402019337978573`*^9, {3.6402036201925097`*^9, 3.640203650949141*^9}, 
+   3.640800235889267*^9, 3.640806372378445*^9, {3.640966167712199*^9, 
+   3.64096617694862*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"desorbRateB", "=", 
+   RowBox[{
+    RowBox[{"hopRateB", "*", 
+     RowBox[{"(", 
+      RowBox[{"1", "-", "xEquil"}], ")"}]}], "+", 
+    RowBox[{"hopRateEx", "*", "xEquilA"}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.6402019406838017`*^9, 3.64020196882932*^9}, {
+   3.6402036592171087`*^9, 3.640203661148148*^9}, 3.6408002410372763`*^9, 
+   3.6408063731584463`*^9, {3.640966179503476*^9, 3.640966185987499*^9}}],
+
+Cell["Total rate of the system.", "Text",
+ CellChangeTimes->{{3.596838374104034*^9, 3.596838379630389*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"totalSystemRate", "=", "0.0"}], ";"}]], "Input",
+ CellChangeTimes->{{3.59683838083337*^9, 3.596838385191119*^9}, {
+  3.640800383418726*^9, 3.6408003835903263`*^9}}]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Arrays", "Subsection",
+ CellChangeTimes->{{3.596833386610682*^9, 3.5968334007337*^9}}],
+
+Cell["The type of atom in every site of the pore.", "Text",
+ CellChangeTimes->{{3.59683375660746*^9, 3.596833778264977*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"atomTypes", "=", 
+   RowBox[{"Table", "[", 
+    RowBox[{"EMPTY", ",", 
+     RowBox[{"{", 
+      RowBox[{"i", ",", "1", ",", "PORELEN"}], "}"}]}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.5968338535804157`*^9, 3.596833878737591*^9}, {
+  3.640205201842787*^9, 3.640205204236524*^9}, {3.640800199042002*^9, 
+  3.6408002044396114`*^9}}],
+
+Cell["List of possible reaction and swap moves.", "Text",
+ CellChangeTimes->{{3.596834352851944*^9, 3.596834399468719*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"swapMovesA", "=", 
+   RowBox[{"{", "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.596834407982095*^9, 3.59683441327114*^9}, 
+   3.596848758333063*^9, {3.596850171403316*^9, 3.5968501715452642`*^9}, {
+   3.596862421707952*^9, 3.5968624410890102`*^9}, 3.5968626262448893`*^9, {
+   3.640192050269207*^9, 3.640192050304545*^9}, 3.640202367276127*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"swapMovesB", "=", 
+   RowBox[{"{", "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{
+  3.640202678964157*^9, {3.640965788959144*^9, 3.640965793363038*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"swapMovesEx", "=", 
+   RowBox[{"{", "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{3.6409658019045753`*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"rxnMoves", "=", 
+   RowBox[{"{", "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.6409622375687304`*^9, 3.6409622404569483`*^9}}],
+
+Cell["Cumulative rates of the system;", "Text",
+ CellChangeTimes->{{3.596834468348995*^9, 3.596834474701618*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"rates", "=", 
+   RowBox[{"Table", "[", 
+    RowBox[{"0.0", ",", 
+     RowBox[{"{", 
+      RowBox[{"i", ",", "1", ",", "NMOVETYPES"}], "}"}]}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.596834480005561*^9, 3.5968345182069902`*^9}, {
+  3.640800162756338*^9, 3.640800171835554*^9}, {3.640805651064378*^9, 
+  3.6408056670076065`*^9}}]
+}, Closed]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Functions", "Section",
+ CellChangeTimes->{{3.6408098383769326`*^9, 3.640809841013337*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Random Number", "Subsection",
+ CellChangeTimes->{{3.640197583647264*^9, 3.640197585895074*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["RandomReal2: ",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox["Calculates a random number in the range [0,1).",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596841056842939*^9, 3.596841071433649*^9}, {
+  3.596841970112502*^9, 3.596841970305038*^9}, {3.596842395469473*^9, 
+  3.596842400276505*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"RandomReal2", "[", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"randomNumber", "=", "0.0"}], "}"}], ",", "\[IndentingNewLine]",
+      "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"randomNumber", "=", 
+       RowBox[{"RandomReal", "[", "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"randomNumber", " ", "\[GreaterEqual]", "   ", "1.0"}], ",", 
+        RowBox[{
+         RowBox[{"While", "[", " ", 
+          RowBox[{
+           RowBox[{"randomNumber", "\[GreaterEqual]", " ", "1.0"}], ",", 
+           RowBox[{
+            RowBox[{"randomNumber", "=", 
+             RowBox[{"RandomReal", "[", "]"}]}], ";"}]}], "]"}], ";"}]}], 
+       "]"}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Return", "[", "randomNumber", "]"}], ";"}]}], 
+    "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.596841976563507*^9, 3.5968419962247133`*^9}, 
+   3.6401975752267647`*^9, {3.640197612807043*^9, 3.6401976386786222`*^9}, {
+   3.640199409507574*^9, 3.640199412776103*^9}, {3.640952755176075*^9, 
+   3.640952762359353*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["RandomReal3: ",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox["Calculates a random number in the range (0,1).",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596841056842939*^9, 3.596841071433649*^9}, {
+  3.596841970112502*^9, 3.596841970305038*^9}, {3.596842395469473*^9, 
+  3.596842400276505*^9}, {3.6401993779188757`*^9, 3.640199380749139*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"RandomReal3", "[", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"randomNumber", "=", "0.0"}], "}"}], ",", "\[IndentingNewLine]",
+      "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"randomNumber", "=", 
+       RowBox[{"RandomReal", "[", "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"randomNumber", " ", "\[Equal]", "  ", "0.0"}], " ", "\[Or]",
+          " ", 
+         RowBox[{"randomNumber", " ", "\[Equal]", "  ", "1.0"}]}], ",", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", " ", 
+        RowBox[{
+         RowBox[{"While", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"randomNumber", "\[Equal]", "0.0"}], " ", "\[Or]", " ", 
+            RowBox[{"randomNumber", "\[Equal]", "1.0"}]}], ",", 
+           RowBox[{
+            RowBox[{"randomNumber", "=", 
+             RowBox[{"RandomReal", "[", "]"}]}], ";"}]}], "]"}], ";"}]}], 
+       "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Return", "[", "randomNumber", "]"}], ";"}]}], 
+    "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.596841078334206*^9, 3.5968411595069933`*^9}, {
+   3.596841197572233*^9, 3.5968412153374987`*^9}, {3.596841429216929*^9, 
+   3.596841431078767*^9}, 3.5968414854852057`*^9, {3.596841618599381*^9, 
+   3.59684161875802*^9}, {3.596841684518651*^9, 3.596841695237961*^9}, {
+   3.596841923489312*^9, 3.596841923662858*^9}, {3.640199336266757*^9, 
+   3.640199353727504*^9}, {3.640199383872892*^9, 3.6401994046003942`*^9}}]
+}, Closed]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Setup simulation functions", "Subsection",
+ CellChangeTimes->{{3.640197583647264*^9, 3.640197585895074*^9}, {
+  3.640802492979231*^9, 3.640802498470441*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["SetupSimulationEmpty: ",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox["Setups a simulation where the pore is initially empty.",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596841056842939*^9, 3.596841071433649*^9}, {
+  3.596841970112502*^9, 3.596841970305038*^9}, {3.596842395469473*^9, 
+  3.596842400276505*^9}, {3.6401993779188757`*^9, 3.640199380749139*^9}, {
+  3.6408028952883377`*^9, 3.6408029638348584`*^9}, {3.640803563780712*^9, 
+  3.640803563921112*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"SetupSimulationEmpty", "[", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"i", "=", "0"}], "}"}], ",", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{"(*", 
+      RowBox[{
+      "Set", " ", "the", " ", "required", " ", "variables", " ", "to", " ", 
+       RowBox[{"zero", "/", "empty"}], " ", "and", " ", "to", " ", "their", 
+       " ", "initial", " ", "logical", " ", "state"}], "*)"}], 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"time", " ", "=", " ", "0.0"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"nSwapMovesA", " ", "=", "0"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"nSwapMovesB", " ", "=", "0"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"nSwapMovesEx", " ", "=", "0"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"nRxnMoves", " ", "=", " ", "0"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"swapMovesA", "=", 
+       RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"swapMovesB", "=", 
+       RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"swapMovesEx", "=", 
+       RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"rxnMoves", "=", 
+       RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "Empty", " ", "all", " ", "the", " ", "sites", " ", "and", " ", "set", 
+        " ", "the", " ", "starting", " ", "particle", " ", "site", " ", "to", 
+        " ", "the", " ", "tracked", " ", "site"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"atomTypes", " ", "=", 
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{"RandomChoice", "[", 
+          RowBox[{"{", 
+           RowBox[{"AA", ",", "EMPTY"}], "}"}], "]"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"i", ",", "1", ",", "PORELEN"}], "}"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "Update", " ", "the", " ", "lists", " ", "before", " ", "starting", 
+        " ", "the", " ", "simulation"}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"For", "[", 
+       RowBox[{
+        RowBox[{"i", "=", "1"}], ",", 
+        RowBox[{"i", "\[LessEqual]", " ", "PORELEN"}], ",", 
+        RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"UpdateSwapList", "[", "i", "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"UpdateRXNList", "[", "i", "]"}], ";"}]}], 
+       "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], ";"}]}], 
+    "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.6408025015904465`*^9, 3.6408026160478477`*^9}, {
+   3.6408027864937468`*^9, 3.640802786649747*^9}, {3.640803074173852*^9, 
+   3.640803207897287*^9}, {3.640803253402567*^9, 3.6408033629771595`*^9}, {
+   3.640803565902316*^9, 3.640803566042716*^9}, {3.640803883222473*^9, 
+   3.640803894048892*^9}, {3.640805768813385*^9, 3.6408057963630333`*^9}, {
+   3.640805873224368*^9, 3.640805877701576*^9}, {3.6408059322080717`*^9, 
+   3.6408059971509857`*^9}, {3.640806029770643*^9, 3.640806092139553*^9}, {
+   3.640806280697084*^9, 3.64080628406669*^9}, 3.640806350273206*^9, {
+   3.640806916897402*^9, 3.6408069174590025`*^9}, {3.6408086397956276`*^9, 
+   3.640808649639245*^9}, {3.640863442658677*^9, 3.640863461314403*^9}, {
+   3.640960570874159*^9, 3.64096061284816*^9}, {3.6409606700475903`*^9, 
+   3.640960677091992*^9}, {3.6409617030341043`*^9, 3.640961707828978*^9}, {
+   3.640962825264277*^9, 3.640962835957107*^9}, {3.640963572017322*^9, 
+   3.640963572647846*^9}, {3.64096575914165*^9, 3.6409657699718122`*^9}, {
+   3.64096758559214*^9, 3.640967720320677*^9}, 3.640968878844572*^9, {
+   3.6409729836733303`*^9, 3.640973025805941*^9}}]
+}, Closed]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Sims to run", "Subsection",
+ CellChangeTimes->{{3.640197583647264*^9, 3.640197585895074*^9}, {
+  3.640802343406169*^9, 3.640802354029787*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["SimEmpty: ",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox["Runs a simulation where the pore is initially empty.",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596841056842939*^9, 3.596841071433649*^9}, {
+  3.596841970112502*^9, 3.596841970305038*^9}, {3.596842395469473*^9, 
+  3.596842400276505*^9}, {3.6401993779188757`*^9, 3.640199380749139*^9}, {
+  3.6408028952883377`*^9, 3.6408029638348584`*^9}, {3.640803577305936*^9, 
+  3.6408036205492115`*^9}, {3.6409634566112213`*^9, 3.640963458034186*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"SimEmpty", "[", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"iter", "=", "0"}], ",", 
+       RowBox[{"dt", "=", "0"}], ",", " ", 
+       RowBox[{"timeStart", "=", "0"}]}], "}"}], ",", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"CalculateRates", "[", "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"totalSystemRate", "=", 
+       RowBox[{"rates", "[", 
+        RowBox[{"[", "NMOVETYPES", "]"}], "]"}]}], ";", "\[IndentingNewLine]",
+       "\[IndentingNewLine]", 
+      RowBox[{"dt", "=", 
+       RowBox[{
+        RowBox[{"-", 
+         RowBox[{"Log", "[", 
+          RowBox[{"RandomReal3", "[", "]"}], "]"}]}], "/", 
+        "totalSystemRate"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"time", "=", 
+       RowBox[{"time", "+", "dt"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"SelectAndDoMove", "[", "]"}], ";"}]}], "\[IndentingNewLine]", 
+    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.640802435883131*^9, 3.640802479610008*^9}, {
+   3.6408026206342554`*^9, 3.640802696247588*^9}, {3.6408027641857076`*^9, 
+   3.6408027669469123`*^9}, 3.640803590347559*^9, {3.6408040198631134`*^9, 
+   3.640804037974745*^9}, {3.640805478590475*^9, 3.6408054909300966`*^9}, 
+   3.6408075343932858`*^9, {3.640808047275387*^9, 3.6408081195191135`*^9}, {
+   3.640863490066948*^9, 3.64086349581586*^9}}]
+}, Closed]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Rate calculation and making a move", "Subsection",
+ CellChangeTimes->{{3.640199272002343*^9, 3.640199283120508*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["CalculateRates: ",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox["Calculates the rates of the system,  rates[[1]] is the swap rate \
+of an A particle, rates[[2]] is the swap rate of a B particle, rates[[3]] is \
+the adsorption/desorption rate to the left of the pore (site=1) and rate[[4]] \
+is the adsorption/desorption rate to the right of the pore (site=PORELEN).",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596835143071958*^9, 3.596835259607486*^9}, 
+   3.596835869259355*^9, {3.596842374557931*^9, 3.5968423783899803`*^9}, {
+   3.6408012953495274`*^9, 3.6408013359095993`*^9}, {3.64080817444681*^9, 
+   3.6408081761784134`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"CalculateRates", "[", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{"(*", 
+      RowBox[{"Swap", " ", "Moves"}], "*)"}], "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"rates", "[", 
+        RowBox[{"[", "1", "]"}], "]"}], "=", " ", 
+       RowBox[{"nSwapMovesA", "*", "hopRateA"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"rates", "[", 
+        RowBox[{"[", "2", "]"}], "]"}], "=", 
+       RowBox[{
+        RowBox[{"rates", "[", 
+         RowBox[{"[", "1", "]"}], "]"}], "+", 
+        RowBox[{"nSwapMovesB", "*", "hopRateB"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"Set", " ", "the", " ", 
+         RowBox[{"adsorb", "/", "desorb"}], " ", "rate", " ", "for", " ", 
+         "site"}], " ", "=", " ", "1"}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"atomTypes", "[", 
+          RowBox[{"[", "1", "]"}], "]"}], "\[Equal]", "EMPTY"}], ",", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"rates", "[", 
+           RowBox[{"[", "3", "]"}], "]"}], "=", 
+          RowBox[{
+           RowBox[{"rates", "[", 
+            RowBox[{"[", "2", "]"}], "]"}], "+", "adsorbRate"}]}], ";"}], 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", ",", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"atomTypes", "[", 
+             RowBox[{"[", "1", "]"}], "]"}], "\[Equal]", "AA"}], " ", ",", 
+           "\[IndentingNewLine]", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"rates", "[", 
+              RowBox[{"[", "3", "]"}], "]"}], "=", 
+             RowBox[{
+              RowBox[{"rates", "[", 
+               RowBox[{"[", "2", "]"}], "]"}], "+", "desorbRateA"}]}], ";"}], 
+           "\[IndentingNewLine]", "\[IndentingNewLine]", ",", 
+           "\[IndentingNewLine]", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"atomTypes", "[", 
+                RowBox[{"[", "1", "]"}], "]"}], "\[Equal]", "BB"}], ",", 
+              "\[IndentingNewLine]", "\[IndentingNewLine]", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"rates", "[", 
+                 RowBox[{"[", "3", "]"}], "]"}], "=", 
+                RowBox[{
+                 RowBox[{"rates", "[", 
+                  RowBox[{"[", "2", "]"}], "]"}], "+", "desorbRateB"}]}], 
+               ";"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], 
+            ";"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], 
+         ";"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"Set", " ", "the", " ", 
+         RowBox[{"adsorb", "/", "desorb"}], " ", "rate", " ", "for", " ", 
+         "site"}], " ", "=", " ", "PORELEN"}], "*)"}], "\[IndentingNewLine]", 
+      
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"atomTypes", "[", 
+          RowBox[{"[", "PORELEN", "]"}], "]"}], "\[Equal]", "EMPTY"}], ",", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"rates", "[", 
+           RowBox[{"[", "4", "]"}], "]"}], "=", 
+          RowBox[{
+           RowBox[{"rates", "[", 
+            RowBox[{"[", "3", "]"}], "]"}], "+", "adsorbRate"}]}], ";"}], 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", ",", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"atomTypes", "[", 
+             RowBox[{"[", "PORELEN", "]"}], "]"}], "\[Equal]", "AA"}], ",", 
+           "\[IndentingNewLine]", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"rates", "[", 
+              RowBox[{"[", "4", "]"}], "]"}], "=", 
+             RowBox[{
+              RowBox[{"rates", "[", 
+               RowBox[{"[", "3", "]"}], "]"}], "+", "desorbRateA"}]}], ";"}], 
+           "\[IndentingNewLine]", "\[IndentingNewLine]", ",", 
+           "\[IndentingNewLine]", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"atomTypes", "[", 
+                RowBox[{"[", "PORELEN", "]"}], "]"}], "\[Equal]", "BB"}], ",",
+               "\[IndentingNewLine]", "\[IndentingNewLine]", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"rates", "[", 
+                 RowBox[{"[", "4", "]"}], "]"}], "=", 
+                RowBox[{
+                 RowBox[{"rates", "[", 
+                  RowBox[{"[", "3", "]"}], "]"}], "+", "desorbRateB"}]}], 
+               ";"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], 
+            ";"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], 
+         ";"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"Set", " ", "the", " ", "reaction", " ", "rate"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"rates", "[", 
+        RowBox[{"[", "5", "]"}], "]"}], " ", "=", " ", 
+       RowBox[{
+        RowBox[{"rates", "[", 
+         RowBox[{"[", "4", "]"}], "]"}], "+", 
+        RowBox[{"rxnRate", "*", "nRxnMoves"}]}]}], ";", "\[IndentingNewLine]",
+       "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "Set", " ", "the", " ", "particle", " ", "exchange", " ", "rate"}], 
+       "*)"}], "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"rates", "[", 
+        RowBox[{"[", "6", "]"}], "]"}], " ", "=", " ", 
+       RowBox[{
+        RowBox[{"rates", "[", 
+         RowBox[{"[", "5", "]"}], "]"}], "+", 
+        RowBox[{"hopRateEx", "*", "nSwapMovesEx"}]}]}], ";"}]}], 
+    "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.59683642504708*^9, 3.596836791296925*^9}, 
+   3.596850622006669*^9, {3.5968507296177397`*^9, 3.596850731206736*^9}, {
+   3.64019923202063*^9, 3.640199238051577*^9}, 3.64020142689067*^9, {
+   3.640201643895112*^9, 3.640201663742353*^9}, {3.640201810642837*^9, 
+   3.640201907646871*^9}, {3.6402020064935503`*^9, 3.640202141766699*^9}, 
+   3.640202282884811*^9, {3.640202594362529*^9, 3.640202655310251*^9}, {
+   3.640202699647334*^9, 3.640202713236197*^9}, {3.640204236675996*^9, 
+   3.6402042915769777`*^9}, 3.640207440148725*^9, {3.6407999130622997`*^9, 
+   3.6407999998452525`*^9}, {3.6408000329797106`*^9, 3.640800043478529*^9}, {
+   3.6408004389236236`*^9, 3.640800519575765*^9}, {3.640800555923829*^9, 
+   3.6408007332805405`*^9}, 3.64080080720907*^9, {3.6408073678785934`*^9, 
+   3.6408073723714013`*^9}, {3.6408074818523936`*^9, 3.640807512724848*^9}, {
+   3.640807589102582*^9, 3.640807590319384*^9}, {3.6408077505940657`*^9, 
+   3.6408077595172815`*^9}, 3.6408078737406816`*^9, 3.640807906266739*^9, {
+   3.640862770881133*^9, 3.640862773128922*^9}, {3.6408630751599417`*^9, 
+   3.640863077911347*^9}, {3.640962651895606*^9, 3.6409627034427433`*^9}, {
+   3.6409659922066298`*^9, 3.6409660132288523`*^9}, {3.640966080949506*^9, 
+   3.6409661229019537`*^9}, {3.640966365490202*^9, 3.6409663838781843`*^9}}]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["SelectAndDoMove:",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" ",
+  FontSize->14,
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox["The function chooses an available move in the system; reaction, \
+swap or adsorption/desorption of a particle at one end.",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596842100366898*^9, 3.596842209000458*^9}, {
+  3.596842355872486*^9, 3.596842360406165*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"SelectAndDoMove", "[", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"moveSelect", "=", "0.0"}], ",", " ", 
+       RowBox[{"moveId", "=", "0"}], ",", " ", "site"}], "}"}], ",", 
+     "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"moveSelect", "=", 
+       RowBox[{
+        RowBox[{"RandomReal3", "[", "]"}], "*", "totalSystemRate"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "This", " ", "chooses", " ", "a", " ", "swap", " ", "move", " ", "of", 
+        " ", "an", " ", "A", " ", "particle"}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"moveSelect", "<", 
+         RowBox[{"rates", "[", 
+          RowBox[{"[", "1", "]"}], "]"}]}], ",", "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"moveId", "=", 
+          RowBox[{"RandomInteger", "[", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", "nSwapMovesA"}], "}"}], "]"}]}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"site", " ", "=", 
+          RowBox[{"swapMovesA", "[", 
+           RowBox[{"[", "moveId", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+         " ", "\[IndentingNewLine]", 
+         RowBox[{"DoSwap", "[", "site", "]"}], ";"}], "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", ",", "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", 
+        RowBox[{"(*", 
+         RowBox[{
+         "This", " ", "chooses", " ", "a", " ", "swap", " ", "move", " ", 
+          "of", " ", "a", " ", "B", " ", "particle"}], "*)"}], 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"moveSelect", "<", 
+            RowBox[{"rates", "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ",", "\[IndentingNewLine]", 
+           "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"moveId", "=", 
+             RowBox[{"RandomInteger", "[", 
+              RowBox[{"{", 
+               RowBox[{"1", ",", "nSwapMovesB"}], "}"}], "]"}]}], ";", 
+            "\[IndentingNewLine]", 
+            RowBox[{"site", " ", "=", 
+             RowBox[{"swapMovesB", "[", 
+              RowBox[{"[", "moveId", "]"}], "]"}]}], ";", 
+            "\[IndentingNewLine]", "\[IndentingNewLine]", 
+            RowBox[{"DoSwap", "[", "site", "]"}], ";"}], 
+           "\[IndentingNewLine]", "\[IndentingNewLine]", ",", 
+           "\[IndentingNewLine]", "\[IndentingNewLine]", 
+           RowBox[{"(*", 
+            RowBox[{
+             RowBox[{
+             "This", " ", "chooses", " ", "an", " ", "end", " ", "move", " ", 
+              "at", " ", "site"}], " ", "=", " ", "1"}], "*)"}], 
+           "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{"moveSelect", "<", 
+               RowBox[{"rates", "[", 
+                RowBox[{"[", "3", "]"}], "]"}]}], ",", "\[IndentingNewLine]", 
+              "\[IndentingNewLine]", 
+              RowBox[{
+               RowBox[{"DoEndMove", "[", "1", "]"}], ";"}], 
+              "\[IndentingNewLine]", "\[IndentingNewLine]", ",", 
+              "\[IndentingNewLine]", "\[IndentingNewLine]", 
+              RowBox[{"(*", 
+               RowBox[{
+                RowBox[{
+                "This", " ", "chooses", " ", "an", " ", "end", " ", "move", 
+                 " ", "at", " ", "site"}], " ", "=", " ", "PORELEN"}], "*)"}],
+               "\[IndentingNewLine]", 
+              RowBox[{
+               RowBox[{"If", "[", 
+                RowBox[{
+                 RowBox[{"moveSelect", "<", 
+                  RowBox[{"rates", "[", 
+                   RowBox[{"[", "4", "]"}], "]"}]}], ",", 
+                 "\[IndentingNewLine]", "\[IndentingNewLine]", 
+                 RowBox[{
+                  RowBox[{"DoEndMove", "[", "PORELEN", "]"}], ";"}], 
+                 "\[IndentingNewLine]", "\[IndentingNewLine]", ",", 
+                 "\[IndentingNewLine]", "\[IndentingNewLine]", 
+                 RowBox[{
+                  RowBox[{"If", "[", 
+                   RowBox[{
+                    RowBox[{"moveSelect", "<", 
+                    RowBox[{"rates", "[", 
+                    RowBox[{"[", "5", "]"}], "]"}]}], ",", 
+                    "\[IndentingNewLine]", "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{"moveId", "=", 
+                    RowBox[{"RandomInteger", "[", 
+                    RowBox[{"{", 
+                    RowBox[{"1", ",", "nRxnMoves"}], "}"}], "]"}]}], ";", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"site", " ", "=", 
+                    RowBox[{"rxnMoves", "[", 
+                    RowBox[{"[", "moveId", "]"}], "]"}]}], ";", 
+                    "\[IndentingNewLine]", "\[IndentingNewLine]", 
+                    RowBox[{"DoRXN", "[", "site", "]"}], ";"}], 
+                    "\[IndentingNewLine]", "\[IndentingNewLine]", ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"moveSelect", "<", 
+                    RowBox[{"rates", "[", 
+                    RowBox[{"[", "6", "]"}], "]"}]}], ",", 
+                    "\[IndentingNewLine]", "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{"moveId", "=", 
+                    RowBox[{"RandomInteger", "[", 
+                    RowBox[{"{", 
+                    RowBox[{"1", ",", "nSwapMovesEx"}], "}"}], "]"}]}], ";", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"site", " ", "=", 
+                    RowBox[{"swapMovesEx", "[", 
+                    RowBox[{"[", "moveId", "]"}], "]"}]}], ";", 
+                    "\[IndentingNewLine]", "\[IndentingNewLine]", 
+                    RowBox[{"DoSwap", "[", "site", "]"}], ";"}], 
+                    "\[IndentingNewLine]", "\[IndentingNewLine]", ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{"Print", "[", 
+                    RowBox[{"\"\<Total system rate : \>\"", "<>", 
+                    RowBox[{"ToString", "[", "totalSystemRate", "]"}]}], 
+                    "]"}], ";", "\[IndentingNewLine]", 
+                    RowBox[{"Print", "[", 
+                    RowBox[{"\"\<Rates : \>\"", "<>", 
+                    RowBox[{"ToString", "[", "rates", "]"}]}], "]"}], ";", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{
+                    "Print", "[", "\"\<Error, this shouldn't happen.\>\"", 
+                    "]"}], ";", "\[IndentingNewLine]", 
+                    RowBox[{"Abort", "[", "]"}], ";"}]}], 
+                    "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], 
+                    ";"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+                   "]"}], ";"}]}], "\[IndentingNewLine]", 
+                "\[IndentingNewLine]", "]"}], ";"}]}], "\[IndentingNewLine]", 
+             "\[IndentingNewLine]", "]"}], ";"}]}], "\[IndentingNewLine]", 
+          "\[IndentingNewLine]", "]"}], ";"}]}], "\[IndentingNewLine]", 
+       "\[IndentingNewLine]", "]"}], ";"}]}], "\[IndentingNewLine]", 
+    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.596840753779261*^9, 3.596840774494766*^9}, {
+   3.59684090764087*^9, 3.596840936021503*^9}, 3.596841504921875*^9, {
+   3.596842226070859*^9, 3.596842270226534*^9}, {3.59684230833107*^9, 
+   3.5968423177290907`*^9}, {3.596842424959478*^9, 3.596842771294487*^9}, {
+   3.596842811924779*^9, 3.596842842197864*^9}, {3.5968428929422607`*^9, 
+   3.596842898220595*^9}, {3.5968429622771893`*^9, 3.596842962665522*^9}, {
+   3.596842999868437*^9, 3.5968430377791*^9}, {3.5968430703461323`*^9, 
+   3.596843251623213*^9}, {3.5968433468188334`*^9, 3.596843461895133*^9}, {
+   3.5968434973469057`*^9, 3.596843529990905*^9}, {3.596844770456943*^9, 
+   3.596844798309339*^9}, {3.596844828942492*^9, 3.596844835915078*^9}, {
+   3.596848961670092*^9, 3.596848969204124*^9}, {3.5968504042183237`*^9, 
+   3.5968504072080593`*^9}, {3.596854101384128*^9, 3.596854125294239*^9}, {
+   3.5968541675314817`*^9, 3.596854168730929*^9}, {3.5968542045382442`*^9, 
+   3.596854223962738*^9}, {3.5968542741881037`*^9, 3.596854287642098*^9}, {
+   3.596857634638256*^9, 3.596857672018282*^9}, {3.5968577447308702`*^9, 
+   3.596857749273987*^9}, {3.5968630372424803`*^9, 3.596863058620923*^9}, 
+   3.596863094969289*^9, {3.596863221775271*^9, 3.596863227637842*^9}, {
+   3.5968633870511713`*^9, 3.596863389368492*^9}, 3.61425891607834*^9, {
+   3.6401967597646112`*^9, 3.640196803419373*^9}, {3.6401975342524223`*^9, 
+   3.640197563449891*^9}, {3.64019916256102*^9, 3.640199164822055*^9}, 
+   3.640202286965603*^9, 3.6402023780254517`*^9, {3.640202808557556*^9, 
+   3.6402028540084343`*^9}, {3.640202912447486*^9, 3.640202934756555*^9}, {
+   3.640204115067218*^9, 3.640204149496327*^9}, {3.640800923101674*^9, 
+   3.6408009934577975`*^9}, {3.6408010592587132`*^9, 
+   3.6408011031571903`*^9}, {3.640805560443819*^9, 3.640805576340247*^9}, {
+   3.6408072188827314`*^9, 3.6408072193195324`*^9}, {3.6408072931856623`*^9, 
+   3.6408073364757385`*^9}, 3.6408074089222655`*^9, {3.640953045174561*^9, 
+   3.6409530453893414`*^9}, {3.640962728608626*^9, 3.640962769148024*^9}, 
+   3.640962802196104*^9, {3.640964428323098*^9, 3.6409644286368504`*^9}, {
+   3.6409662393075047`*^9, 3.64096627510187*^9}}]
+}, Closed]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Make a move", "Subsection",
+ CellChangeTimes->{{3.6401966841088457`*^9, 3.6401966865073347`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["DoEndMove:",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" ",
+  FontSize->14,
+  FontWeight->"Bold",
+  FontColor->GrayLevel[0]],
+ StyleBox["Performs and end move, that is, it adsorbs or desorbs a particle, \
+depending on the state of the pore, for this, the site at which the particle \
+is being adsorbed or desorbed should be specified. \[LineSeparator]      - \
+Site = {1, PORELEN}",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.5968436110208807`*^9, 3.596843665437512*^9}, {
+  3.596843702488429*^9, 3.5968437589331284`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"DoEndMove", "[", "site_", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"randomNumber", "=", "0"}], ",", " ", 
+       RowBox[{"newType", "=", "0"}]}], "}"}], ",", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"atomTypes", "[", 
+          RowBox[{"[", "site", "]"}], "]"}], "\[Equal]", "EMPTY"}], " ", ",", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"randomNumber", "=", 
+          RowBox[{
+           RowBox[{"RandomReal3", "[", "]"}], "*", "adsorbRate"}]}], ";", 
+         "\[IndentingNewLine]", "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"randomNumber", "<", 
+            RowBox[{"(", 
+             RowBox[{"hopRateA", "*", "xEquilA"}], ")"}]}], ",", 
+           "\[IndentingNewLine]", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"newType", " ", "=", " ", "AA"}], ";"}], 
+           "\[IndentingNewLine]", "\[IndentingNewLine]", ",", 
+           "\[IndentingNewLine]", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{"randomNumber", "<", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"hopRateA", "*", "xEquilA"}], "+", 
+                 RowBox[{"hopRateB", "*", "xEquilB"}]}], ")"}]}], ",", 
+              "\[IndentingNewLine]", "\[IndentingNewLine]", 
+              RowBox[{
+               RowBox[{"newType", " ", "=", " ", "BB"}], ";"}]}], 
+             "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], ";"}]}], 
+          "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], ";"}], 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", ",", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"newType", " ", "=", " ", "EMPTY"}], ";", 
+         "\[IndentingNewLine]", "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"pex", ">", "0.0"}], ",", "\[IndentingNewLine]", 
+           "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{"atomTypes", "[", 
+                 RowBox[{"[", "site", "]"}], "]"}], "\[Equal]", "AA"}], " ", 
+               "\[And]", " ", 
+               RowBox[{"xEquilB", ">", "0.0"}]}], ",", "\[IndentingNewLine]", 
+              "\[IndentingNewLine]", 
+              RowBox[{
+               RowBox[{"randomNumber", " ", "=", " ", 
+                RowBox[{
+                 RowBox[{"RandomReal3", "[", "]"}], "*", "desorbRateA"}]}], 
+               ";", "\[IndentingNewLine]", 
+               RowBox[{"If", "[", 
+                RowBox[{
+                 RowBox[{"randomNumber", "<", 
+                  RowBox[{"hopRateEx", "*", "xEquilB"}]}], ",", 
+                 RowBox[{"newType", "=", "BB"}]}], "]"}], ";"}]}], 
+             "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], ";", 
+            "\[IndentingNewLine]", "\[IndentingNewLine]", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{"atomTypes", "[", 
+                 RowBox[{"[", "site", "]"}], "]"}], "\[Equal]", "BB"}], " ", 
+               "\[And]", " ", 
+               RowBox[{"xEquilA", ">", "0.0"}]}], ",", "\[IndentingNewLine]", 
+              "\[IndentingNewLine]", 
+              RowBox[{
+               RowBox[{"randomNumber", " ", "=", " ", 
+                RowBox[{
+                 RowBox[{"RandomReal3", "[", "]"}], "*", "desorbRateB"}]}], 
+               ";", "\[IndentingNewLine]", 
+               RowBox[{"If", "[", 
+                RowBox[{
+                 RowBox[{"randomNumber", "<", 
+                  RowBox[{"hopRateEx", "*", "xEquilA"}]}], ",", 
+                 RowBox[{"newType", "=", "AA"}]}], "]"}], ";"}]}], 
+             "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], ";"}]}], 
+          "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], ";"}]}], 
+       "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"Change", " ", "the", " ", "atom", " ", "types"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"atomTypes", " ", "[", 
+        RowBox[{"[", "site", "]"}], "]"}], "=", " ", "newType"}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"UpdateListAfterEndMove", "[", "site", "]"}], ";"}]}], 
+    "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.5968437372385273`*^9, 3.596843938209689*^9}, {
+   3.596844547159507*^9, 3.596844722384841*^9}, {3.5968462306632137`*^9, 
+   3.596846283200056*^9}, {3.61425897757021*^9, 3.6142591240435038`*^9}, {
+   3.614306666723565*^9, 3.614306884245068*^9}, {3.614306931731398*^9, 
+   3.614306940996381*^9}, {3.640198569746615*^9, 3.640198633520041*^9}, {
+   3.640198693694631*^9, 3.640198721262158*^9}, {3.640198816698613*^9, 
+   3.640198819626059*^9}, {3.640198861152969*^9, 3.640198933029565*^9}, {
+   3.640199141761882*^9, 3.640199142976459*^9}, {3.640203027092572*^9, 
+   3.6402030534745083`*^9}, {3.6402037670266247`*^9, 3.640203941012121*^9}, {
+   3.6402039936361227`*^9, 3.6402040129812517`*^9}, 3.6402064579588957`*^9, {
+   3.640206488651497*^9, 3.6402065363163843`*^9}, {3.640206790732362*^9, 
+   3.640206791154381*^9}, {3.6408014380429783`*^9, 3.64080146737103*^9}, {
+   3.640801542641162*^9, 3.6408015598323927`*^9}, {3.640807939884798*^9, 
+   3.640807964985242*^9}, {3.640808255722953*^9, 3.6408082625089645`*^9}, {
+   3.6408083214302683`*^9, 3.640808373097559*^9}, 3.6408093181472187`*^9, {
+   3.640863232861627*^9, 3.6408632335737143`*^9}, {3.64096657285023*^9, 
+   3.6409667552043543`*^9}, {3.640969575588236*^9, 3.640969592794183*^9}}]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["DoSwap:",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" ",
+  FontWeight->"Bold"],
+ StyleBox["Moves the particle to the left or the right, provided there is an \
+empty site next to it.",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596848479648431*^9, 3.5968485235434237`*^9}, {
+  3.596849209425819*^9, 3.596849252086687*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"DoSwap", "[", "site_", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"site1", "=", "0"}], ",", 
+       RowBox[{"type1", "=", "0"}], ",", 
+       RowBox[{"type2", "=", "0"}]}], "}"}], ",", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"site1", "=", 
+       RowBox[{"site", "+", "1"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"type1", "=", 
+       RowBox[{"atomTypes", "[", 
+        RowBox[{"[", "site", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"type2", "=", 
+       RowBox[{"atomTypes", "[", 
+        RowBox[{"[", "site1", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"type1", "\[Equal]", "type2"}], ",", "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{
+         "Print", "[", 
+          "\"\<The two atoms that are being exchanged are of the same type, \
+this can't happen.\>\"", "]"}], ";", " ", "\[IndentingNewLine]", 
+         RowBox[{"Print", "[", 
+          RowBox[{"\"\<Type 1: \>\"", "<>", 
+           RowBox[{"ToString", "[", 
+            RowBox[{"atomTypes", "[", 
+             RowBox[{"[", "site", "]"}], "]"}], "]"}], "<>", 
+           "\"\<, Site 1: \>\"", "<>", 
+           RowBox[{"ToString", "[", "site", "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Print", "[", 
+          RowBox[{"\"\<Type 2: \>\"", "<>", 
+           RowBox[{"ToString", "[", 
+            RowBox[{"atomTypes", "[", 
+             RowBox[{"[", "site1", "]"}], "]"}], "]"}], "<>", 
+           "\"\<, Site 2: \>\"", "<>", 
+           RowBox[{"ToString", "[", "site1", "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Abort", "[", "]"}], ";"}]}], "\[IndentingNewLine]", 
+       "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"atomTypes", "[", 
+        RowBox[{"[", "site", "]"}], "]"}], "=", "type2"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"atomTypes", "[", 
+        RowBox[{"[", "site1", "]"}], "]"}], "=", "type1"}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"UpdateListAfterSwap", "[", "site", "]"}], ";"}]}], 
+    "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.596848622191354*^9, 3.596848711244067*^9}, {
+   3.596848830154312*^9, 3.596848851976817*^9}, {3.596849002266601*^9, 
+   3.596849002424323*^9}, {3.596849042026422*^9, 3.596849049060493*^9}, {
+   3.596849255515345*^9, 3.596849258568932*^9}, {3.596849305919771*^9, 
+   3.596849415984365*^9}, {3.5968497349007473`*^9, 3.596849919048101*^9}, {
+   3.596854660488565*^9, 3.596854684709886*^9}, {3.596854745573606*^9, 
+   3.596854847365218*^9}, {3.596855663337401*^9, 3.5968556761032352`*^9}, {
+   3.5968581055874567`*^9, 3.596858149014501*^9}, {3.596858653135675*^9, 
+   3.596858653533678*^9}, {3.5968598594750137`*^9, 3.596859865846017*^9}, {
+   3.59686122381872*^9, 3.59686129518676*^9}, {3.596861385430964*^9, 
+   3.5968614059276133`*^9}, {3.5968619501328163`*^9, 
+   3.5968619811313877`*^9}, {3.596862028458831*^9, 3.5968620481635647`*^9}, {
+   3.596862239505226*^9, 3.596862239722348*^9}, {3.640196813876239*^9, 
+   3.640196927270726*^9}, {3.640196957502191*^9, 3.640197087466651*^9}, {
+   3.6401971676617537`*^9, 3.640197189621213*^9}, 3.640197835034388*^9, {
+   3.640206826045946*^9, 3.640206830373983*^9}, {3.640801602264467*^9, 
+   3.640801674773394*^9}, {3.64080876671745*^9, 3.6408088761828423`*^9}, {
+   3.6408089081940985`*^9, 3.6408089739638147`*^9}, {3.640809038781928*^9, 
+   3.640809051589551*^9}, {3.6408092774623475`*^9, 3.6408092968687816`*^9}, {
+   3.640863263327053*^9, 3.640863265500621*^9}, {3.64096645241182*^9, 
+   3.640966462886751*^9}, {3.6409726406806087`*^9, 3.640972729432746*^9}, 
+   3.6409731262231503`*^9, 3.640973163132073*^9}]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["DoRXN:",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" ",
+  FontWeight->"Bold"],
+ StyleBox["Moves the particle to the left or the right, provided there is an \
+empty site next to it.",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596848479648431*^9, 3.5968485235434237`*^9}, {
+  3.596849209425819*^9, 3.596849252086687*^9}, {3.640962451513026*^9, 
+  3.640962462086739*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"DoRXN", "[", "site_", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"atomTypes", "[", 
+          RowBox[{"[", "site", "]"}], "]"}], "\[NotEqual]", " ", "AA"}], ",", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{
+         "Print", "[", "\"\<The chosen atom for reaction is not type A.\>\"", 
+          "]"}], ";", " ", "\[IndentingNewLine]", 
+         RowBox[{"Abort", "[", "]"}], ";"}]}], "\[IndentingNewLine]", 
+       "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"atomTypes", "[", 
+        RowBox[{"[", "site", "]"}], "]"}], "=", "BB"}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"UpdateListAfterRXN", "[", "site", "]"}], ";"}]}], 
+    "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.596848622191354*^9, 3.596848711244067*^9}, {
+   3.596848830154312*^9, 3.596848851976817*^9}, {3.596849002266601*^9, 
+   3.596849002424323*^9}, {3.596849042026422*^9, 3.596849049060493*^9}, {
+   3.596849255515345*^9, 3.596849258568932*^9}, {3.596849305919771*^9, 
+   3.596849415984365*^9}, {3.5968497349007473`*^9, 3.596849919048101*^9}, {
+   3.596854660488565*^9, 3.596854684709886*^9}, {3.596854745573606*^9, 
+   3.596854847365218*^9}, {3.596855663337401*^9, 3.5968556761032352`*^9}, {
+   3.5968581055874567`*^9, 3.596858149014501*^9}, {3.596858653135675*^9, 
+   3.596858653533678*^9}, {3.5968598594750137`*^9, 3.596859865846017*^9}, {
+   3.59686122381872*^9, 3.59686129518676*^9}, {3.596861385430964*^9, 
+   3.5968614059276133`*^9}, {3.5968619501328163`*^9, 
+   3.5968619811313877`*^9}, {3.596862028458831*^9, 3.5968620481635647`*^9}, {
+   3.596862239505226*^9, 3.596862239722348*^9}, {3.640196813876239*^9, 
+   3.640196927270726*^9}, {3.640196957502191*^9, 3.640197087466651*^9}, {
+   3.6401971676617537`*^9, 3.640197189621213*^9}, 3.640197835034388*^9, {
+   3.640206826045946*^9, 3.640206830373983*^9}, {3.640801602264467*^9, 
+   3.640801674773394*^9}, {3.64080876671745*^9, 3.6408088761828423`*^9}, {
+   3.6408089081940985`*^9, 3.6408089739638147`*^9}, {3.640809038781928*^9, 
+   3.640809051589551*^9}, {3.6408092774623475`*^9, 3.6408092968687816`*^9}, {
+   3.640863263327053*^9, 3.640863265500621*^9}, {3.6409624659606037`*^9, 
+   3.640962532806136*^9}, 3.6409672332612267`*^9, {3.640973774744787*^9, 
+   3.640973775857169*^9}}]
+}, Closed]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Update lists after a move", "Subsection",
+ CellChangeTimes->{{3.640196311168548*^9, 3.640196314415162*^9}, {
+  3.640197277130446*^9, 3.640197279088979*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["UpdateListsAfterEndMove:",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" ",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" Update the lists of moves after an end move",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596854349028204*^9, 3.596854372184327*^9}, 
+   3.596855233159535*^9, {3.6401971396313057`*^9, 3.640197143333364*^9}, {
+   3.640198152742641*^9, 3.6401981920435543`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"UpdateListAfterEndMove", "[", "site_", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{"(*", 
+      RowBox[{"Update", " ", "the", " ", "reaction", " ", "lists"}], "*)"}], 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"UpdateRXNList", "[", "site", "]"}], ";", "\[IndentingNewLine]",
+       "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"Update", " ", "the", " ", "swap", " ", "lists"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"UpdateSwapList", "[", 
+       RowBox[{"site", "-", "1"}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"UpdateSwapList", "[", "site", "]"}], ";"}]}], 
+    "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.6401971470560637`*^9, 3.640197175733293*^9}, {
+   3.640197233037389*^9, 3.640197255563159*^9}, {3.64019821004875*^9, 
+   3.640198211100006*^9}, {3.64019845547322*^9, 3.640198459910575*^9}, {
+   3.640198751447674*^9, 3.640198762365004*^9}, 3.64080170634785*^9, {
+   3.640962363197084*^9, 3.640962369746439*^9}, {3.6409629070986643`*^9, 
+   3.64096291081559*^9}}]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["UpdateListsAfterSwap:",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" ",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" Update the lists of moves after a particle swap",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596854349028204*^9, 3.596854372184327*^9}, 
+   3.596855233159535*^9, {3.6401971396313057`*^9, 3.640197143333364*^9}, {
+   3.6401981746652*^9, 3.6401981805560904`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"UpdateListAfterSwap", "[", "site_", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{"(*", 
+      RowBox[{"Update", " ", "the", " ", "reaction", " ", "lists"}], "*)"}], 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"UpdateRXNList", "[", "site", "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"UpdateRXNList", "[", 
+       RowBox[{"site", "+", "1"}], "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"Update", " ", "the", " ", "swap", " ", "lists"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"UpdateSwapList", "[", 
+       RowBox[{"site", "-", "1"}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"UpdateSwapList", "[", 
+       RowBox[{"site", "+", "1"}], "]"}], ";"}]}], "\[IndentingNewLine]", 
+    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.6401971470560637`*^9, 3.640197175733293*^9}, {
+  3.640197233037389*^9, 3.640197255563159*^9}, {3.640801716706268*^9, 
+  3.6408017190774717`*^9}, {3.64096233168782*^9, 3.640962341820801*^9}, {
+  3.6409623741634293`*^9, 3.6409623752821007`*^9}, {3.6409629177676983`*^9, 
+  3.640962921655045*^9}}]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["UpdateListsAfterRXN:",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" ",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" Update the lists of moves after a particle swap",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596854349028204*^9, 3.596854372184327*^9}, 
+   3.596855233159535*^9, {3.6401971396313057`*^9, 3.640197143333364*^9}, {
+   3.6401981746652*^9, 3.6401981805560904`*^9}, {3.640962034698957*^9, 
+   3.6409620356350317`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"UpdateListAfterRXN", "[", "site_", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{"(*", 
+      RowBox[{"Update", " ", "the", " ", "reaction", " ", "lists"}], "*)"}], 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"UpdateRXNList", "[", "site", "]"}], ";", "\[IndentingNewLine]",
+       "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"Update", " ", "the", " ", "swap", " ", "lists"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"UpdateSwapList", "[", 
+       RowBox[{"site", "-", "1"}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"UpdateSwapList", "[", "site", "]"}], ";"}]}], 
+    "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.6401971470560637`*^9, 3.640197175733293*^9}, {
+  3.640197233037389*^9, 3.640197255563159*^9}, {3.640801716706268*^9, 
+  3.6408017190774717`*^9}, {3.640962044003521*^9, 3.640962077886383*^9}, {
+  3.640962380305827*^9, 3.640962381329441*^9}, {3.640963670695002*^9, 
+  3.640963670854747*^9}}]
+}, Closed]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Update the specific lists", "Subsection",
+ CellChangeTimes->{{3.640196311168548*^9, 3.640196314415162*^9}, {
+  3.640197281892468*^9, 3.64019728383293*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["UpdateSwapList:",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" ",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" Update the lists of possible swaps between particles and sites.",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596854349028204*^9, 3.596854372184327*^9}, 
+   3.596855233159535*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"UpdateSwapList", "[", "site_", "]"}], ":=", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"atomType", "=", "0"}], ",", 
+        RowBox[{"nextType", "=", "0"}], ",", " ", 
+        RowBox[{"cond", " ", "=", " ", "False"}]}], "}"}], ",", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"site", "\[GreaterEqual]", " ", "1"}], " ", "\[And]", " ", 
+          RowBox[{"site", "<", " ", "PORELEN"}]}], ",", "\[IndentingNewLine]",
+          "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"atomType", "=", 
+           RowBox[{"atomTypes", "[", 
+            RowBox[{"[", "site", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+          RowBox[{"nextType", "=", 
+           RowBox[{"atomTypes", "[", 
+            RowBox[{"[", 
+             RowBox[{"site", "+", "1"}], "]"}], "]"}]}], ";", 
+          "\[IndentingNewLine]", "\[IndentingNewLine]", 
+          RowBox[{"DeleteMovesFromList", "[", 
+           RowBox[{"site", ",", "swapMovesA", ",", "nSwapMovesA"}], "]"}], 
+          ";", "\[IndentingNewLine]", 
+          RowBox[{"DeleteMovesFromList", "[", 
+           RowBox[{"site", ",", "swapMovesB", ",", "nSwapMovesB"}], "]"}], 
+          ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"atomType", "\[Equal]", "EMPTY"}], " ", "\[And]", " ", 
+               
+               RowBox[{"nextType", "\[Equal]", " ", "AA"}]}], ")"}], "\[Or]", 
+             
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"atomType", "\[Equal]", " ", "AA"}], " ", "\[And]", 
+               " ", 
+               RowBox[{"nextType", "\[Equal]", " ", "EMPTY"}]}], ")"}]}], ",",
+             "\[IndentingNewLine]", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"AddMoveToList", "[", 
+              RowBox[{"site", ",", "swapMovesA", ",", "nSwapMovesA"}], "]"}], 
+             ";"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], 
+          ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"atomType", "\[Equal]", "EMPTY"}], " ", "\[And]", " ", 
+               
+               RowBox[{"nextType", "\[Equal]", " ", "BB"}]}], ")"}], "\[Or]", 
+             
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"atomType", "\[Equal]", " ", "BB"}], " ", "\[And]", 
+               " ", 
+               RowBox[{"nextType", "\[Equal]", " ", "EMPTY"}]}], ")"}]}], ",",
+             " ", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"AddMoveToList", "[", 
+              RowBox[{"site", ",", "swapMovesB", ",", "nSwapMovesB"}], "]"}], 
+             ";"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], 
+          ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{"pex", " ", ">", "0.0"}], ",", "\[IndentingNewLine]", 
+            "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"DeleteMovesFromList", "[", 
+              RowBox[{"site", ",", "swapMovesEx", ",", "nSwapMovesEx"}], 
+              "]"}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+             RowBox[{"If", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"atomType", "\[Equal]", "AA"}], " ", "\[And]", " ", 
+                  
+                  RowBox[{"nextType", "\[Equal]", " ", "BB"}]}], ")"}], 
+                "\[Or]", 
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"atomType", "\[Equal]", " ", "BB"}], " ", "\[And]", 
+                  " ", 
+                  RowBox[{"nextType", "\[Equal]", " ", "AA"}]}], ")"}]}], ",",
+                " ", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+               RowBox[{
+                RowBox[{"AddMoveToList", "[", 
+                 RowBox[{"site", ",", "swapMovesEx", ",", "nSwapMovesEx"}], 
+                 "]"}], ";"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]",
+               "]"}], ";"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+           "]"}], ";"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        "]"}], ";"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}],
+    ";"}], "\[IndentingNewLine]"}]], "Input",
+ CellChangeTimes->{{3.5968543776920767`*^9, 3.596854625603168*^9}, {
+   3.596861646336955*^9, 3.596861669496647*^9}, {3.596861859927277*^9, 
+   3.596861865867712*^9}, 3.596862278402115*^9, {3.6401922030359707`*^9, 
+   3.640192206331565*^9}, {3.640196358676963*^9, 3.640196408221376*^9}, {
+   3.640196528626018*^9, 3.640196531017447*^9}, {3.6402022878826237`*^9, 
+   3.6402022892501793`*^9}, {3.640202379303833*^9, 3.640202382575388*^9}, {
+   3.6402031526556892`*^9, 3.640203266074046*^9}, {3.6402043895493593`*^9, 
+   3.640204439950333*^9}, {3.6407997895100827`*^9, 3.640799790960885*^9}, {
+   3.6408017705263624`*^9, 3.6408019238902316`*^9}, {3.6408066061448555`*^9, 
+   3.6408066174236755`*^9}, {3.6408067079974346`*^9, 
+   3.6408068766025305`*^9}, {3.6408069252746162`*^9, 
+   3.6408069264758186`*^9}, {3.640963100676528*^9, 3.64096311844942*^9}, {
+   3.640966840356319*^9, 3.640966931371272*^9}, 3.640967647325411*^9}]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["UpdateRXNList:",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" ",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" Update the lists of possible swaps between particles and sites.",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596854349028204*^9, 3.596854372184327*^9}, 
+   3.596855233159535*^9, {3.640962096032007*^9, 3.640962097191827*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"UpdateRXNList", "[", "site_", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"site", "\[GreaterEqual]", " ", "1"}], " ", "\[And]", " ", 
+         RowBox[{"site", "\[LessEqual]", " ", "PORELEN"}], " ", "\[And]", " ", 
+         RowBox[{"rxnRate", " ", ">", "0.0"}]}], ",", "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"DeleteMovesFromList", "[", 
+          RowBox[{"site", ",", "rxnMoves", ",", "nRxnMoves"}], "]"}], ";", 
+         "\[IndentingNewLine]", "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"atomTypes", "[", 
+             RowBox[{"[", "site", "]"}], "]"}], "\[Equal]", "AA"}], ",", 
+           RowBox[{
+            RowBox[{"AddMoveToList", "[", 
+             RowBox[{"site", ",", "rxnMoves", ",", "nRxnMoves"}], "]"}], 
+            ";"}]}], "]"}], ";"}]}], "\[IndentingNewLine]", 
+       "\[IndentingNewLine]", "]"}], ";"}]}], "\[IndentingNewLine]", 
+    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.5968543776920767`*^9, 3.596854625603168*^9}, {
+   3.596861646336955*^9, 3.596861669496647*^9}, {3.596861859927277*^9, 
+   3.596861865867712*^9}, 3.596862278402115*^9, {3.6401922030359707`*^9, 
+   3.640192206331565*^9}, {3.640196358676963*^9, 3.640196408221376*^9}, {
+   3.640196528626018*^9, 3.640196531017447*^9}, {3.6402022878826237`*^9, 
+   3.6402022892501793`*^9}, {3.640202379303833*^9, 3.640202382575388*^9}, {
+   3.6402031526556892`*^9, 3.640203266074046*^9}, {3.6402043895493593`*^9, 
+   3.640204439950333*^9}, {3.6407997895100827`*^9, 3.640799790960885*^9}, {
+   3.6408017705263624`*^9, 3.6408019238902316`*^9}, {3.6408066061448555`*^9, 
+   3.6408066174236755`*^9}, {3.6408067079974346`*^9, 
+   3.6408068766025305`*^9}, {3.6408069252746162`*^9, 
+   3.6408069264758186`*^9}, {3.640962105648643*^9, 3.6409621628475246`*^9}, {
+   3.640962286346437*^9, 3.640962308001973*^9}, {3.640963688334399*^9, 
+   3.640963695603484*^9}, {3.640963947099257*^9, 3.640963955147107*^9}}]
+}, Closed]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Add/Remove Moves From Lists", "Subsection",
+ CellChangeTimes->{{3.640192399228009*^9, 3.6401924080746517`*^9}, 
+   3.6402059414874783`*^9}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["AddMoveToList: ",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox["Add move to a list.",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596850005088902*^9, 3.5968500580297947`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"Attributes", "[", "AddMoveToList", "]"}], "=", "HoldAll"}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.596852215493969*^9, 3.596852228029937*^9}, {
+   3.596852300714501*^9, 3.59685230408011*^9}, {3.596852589343157*^9, 
+   3.596852593452941*^9}, {3.596853509793941*^9, 3.5968535212307653`*^9}, 
+   3.59685366538188*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"AddMoveToList", "[", 
+    RowBox[{"site_", ",", "moveList_", ",", "nMoves_"}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"nMoves", "=", 
+       RowBox[{"nMoves", "+", "1"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"moveList", " ", "=", " ", 
+       RowBox[{"Append", "[", 
+        RowBox[{"moveList", ",", "site"}], "]"}]}]}]}], "\[IndentingNewLine]",
+     "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.596850088642335*^9, 3.596850102805409*^9}, {
+   3.596850305253983*^9, 3.5968503121170263`*^9}, {3.596850943919992*^9, 
+   3.5968509926891403`*^9}, {3.596853527642706*^9, 3.596853531211445*^9}, {
+   3.596853564125359*^9, 3.596853641900429*^9}, {3.640192114799547*^9, 
+   3.640192133924224*^9}, 3.640192216020056*^9}]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["DeleteMoveFromList:",
+  FontWeight->"Bold",
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox[" ",
+  FontSize->14,
+  FontColor->RGBColor[0, 0, 1]],
+ StyleBox["Delete a move from a list.",
+  FontSize->14,
+  FontColor->GrayLevel[0]]
+}], "Subsubsection",
+ CellChangeTimes->{{3.596850062019682*^9, 3.59685008178848*^9}, {
+  3.614259261788869*^9, 3.614259270018618*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"Attributes", "[", "DeleteMovesFromList", "]"}], "=", "HoldAll"}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.596852215493969*^9, 3.596852228029937*^9}, {
+   3.596852300714501*^9, 3.59685230408011*^9}, {3.596852589343157*^9, 
+   3.596852593452941*^9}, {3.596853509793941*^9, 3.5968535212307653`*^9}, 
+   3.59685366538188*^9, {3.5968537118809423`*^9, 3.596853715625259*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"DeleteMovesFromList", "[", 
+    RowBox[{"site_", ",", "moveList_", ",", "nMoves_"}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"nMoves", " ", ">", "0"}], " ", "\[And]", " ", 
+         RowBox[{"MemberQ", "[", 
+          RowBox[{"moveList", ",", "site"}], "]"}]}], ",", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", " ", 
+        RowBox[{
+         RowBox[{"moveList", "=", 
+          RowBox[{"DeleteCases", "[", 
+           RowBox[{"moveList", ",", "site"}], "]"}]}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"nMoves", "=", 
+          RowBox[{"nMoves", "-", "1"}]}], ";"}]}], "\[IndentingNewLine]", 
+       "\[IndentingNewLine]", "]"}], ";"}]}], "\[IndentingNewLine]", 
+    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.596850088642335*^9, 3.596850102805409*^9}, {
+   3.596850305253983*^9, 3.5968503121170263`*^9}, {3.596850943919992*^9, 
+   3.5968509926891403`*^9}, {3.596853527642706*^9, 3.596853531211445*^9}, {
+   3.596853564125359*^9, 3.596853641900429*^9}, 3.596853724931251*^9, {
+   3.596853770881001*^9, 3.596853978108592*^9}, {3.596858330225636*^9, 
+   3.596858330415413*^9}, {3.640192062681653*^9, 3.640192102853245*^9}, 
+   3.640192213197184*^9, {3.64096425160454*^9, 3.640964262898326*^9}}]
+}, Closed]]
+}, Closed]]
+}, Closed]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Main Program", "Subtitle",
+ CellChangeTimes->{{3.596831824295456*^9, 3.596831827206822*^9}}],
+
+Cell["\<\
+Main program, to be run after initializing all the functions.\
+\>", "Text",
+ CellChangeTimes->{{3.5968369357525663`*^9, 3.596836977662565*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"main", "[", "]"}], ":=", 
+  RowBox[{"DynamicModule", "[", 
+   RowBox[{
+    RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"time", "=", "0.0"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"totalSystemRate", "=", "hopRateA"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"SetupSimulationEmpty", "[", "]"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"CalculateRates", "[", "]"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"totalSystemRate", "=", 
+      RowBox[{"rates", "[", 
+       RowBox[{"[", "NMOVETYPES", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Dynamic", "[", 
+      RowBox[{"Refresh", "[", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"SimEmpty", "[", "]"}], ";", "\[IndentingNewLine]", 
+         "\[IndentingNewLine]", 
+         RowBox[{"Column", "[", 
+          RowBox[{
+           RowBox[{"{", "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"Show", "[", "\[IndentingNewLine]", 
+              RowBox[{"MatrixPlot", "[", 
+               RowBox[{
+                RowBox[{"{", "atomTypes", "}"}], ",", 
+                RowBox[{"PlotRange", "\[Rule]", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"1", ",", "1"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"1", ",", 
+                    RowBox[{"PORELEN", "+", "2"}]}], "}"}]}], "}"}]}], ",", 
+                RowBox[{"Mesh", "\[Rule]", "All"}], ",", 
+                RowBox[{"ColorRules", "\[Rule]", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"AA", "\[Rule]", " ", "Blue"}], ",", " ", 
+                   RowBox[{"BB", "\[Rule]", "Red"}], ",", 
+                   RowBox[{"EMPTY", "\[Rule]", " ", "White"}]}], "}"}]}], ",", 
+                RowBox[{"ImageSize", "\[Rule]", "Full"}]}], "]"}], 
+              "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+             "\[IndentingNewLine]", 
+             RowBox[{"Row", "[", 
+              RowBox[{
+               RowBox[{"{", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"Row", "[", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"\"\<A\>\"", ",", "\"\< \>\"", ",", "Blue"}], 
+                    "}"}], ",", 
+                   RowBox[{"Alignment", "\[Rule]", "Right"}]}], "]"}], ",", 
+                 "\[IndentingNewLine]", "\"\< \>\"", ",", 
+                 "\[IndentingNewLine]", 
+                 RowBox[{"Row", "[", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"\"\<B\>\"", ",", "\"\< \>\"", " ", ",", "Red"}], 
+                    "}"}], ",", 
+                   RowBox[{"Alignment", "\[Rule]", "Right"}]}], "]"}], ",", 
+                 "\[IndentingNewLine]", "\"\< \>\"", ",", 
+                 "\[IndentingNewLine]", 
+                 RowBox[{"Row", "[", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"\"\<Empty\>\"", ",", "\"\< \>\"", ",", "White"}],
+                     "}"}], ",", 
+                   RowBox[{"Alignment", "\[Rule]", "Right"}]}], "]"}]}], 
+                "\[IndentingNewLine]", "}"}], ",", 
+               RowBox[{"Alignment", "\[Rule]", "Center"}]}], "]"}], ",", 
+             "\[IndentingNewLine]", "\[IndentingNewLine]", 
+             RowBox[{"Row", "[", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"\"\<Time gone by: \>\"", "<>", 
+                  RowBox[{"ToString", "[", 
+                   RowBox[{"SetPrecision", "[", 
+                    RowBox[{"time", ",", "6"}], "]"}], "]"}], "<>", 
+                  "\"\< s\>\""}], ",", 
+                 RowBox[{"\"\<, Total System Rate: \>\"", "<>", 
+                  RowBox[{"ToString", "[", 
+                   RowBox[{"SetPrecision", "[", 
+                    RowBox[{"totalSystemRate", ",", "5"}], "]"}], "]"}], 
+                  "<>", "\"\< s\>\""}]}], "}"}], ",", 
+               RowBox[{"Alignment", "\[Rule]", "Center"}]}], "]"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"Row", "[", 
+              RowBox[{"{", "\[IndentingNewLine]", 
+               RowBox[{
+                RowBox[{"Row", "[", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{
+                   "\"\<<\!\(\*SubscriptBox[\(A\), \(out\)]\)>\>\"", ",", 
+                    "\"\< = \>\"", ",", 
+                    RowBox[{"ToString", "[", "xEquilA", "]"}]}], "}"}], ",", 
+                  RowBox[{"Alignment", "\[Rule]", " ", "Center"}]}], "]"}], 
+                ",", "\[IndentingNewLine]", 
+                RowBox[{"Row", "[", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{
+                   "\"\<, <\!\(\*SubscriptBox[\(B\), \(out\)]\)>\>\"", ",", 
+                    "\"\< = \>\"", ",", 
+                    RowBox[{"ToString", "[", "xEquilB", "]"}]}], "}"}], ",", 
+                  RowBox[{"Alignment", "\[Rule]", " ", "Center"}]}], "]"}]}], 
+               "\[IndentingNewLine]", "}"}], "]"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"Row", "[", 
+              RowBox[{"{", "\[IndentingNewLine]", 
+               RowBox[{
+                RowBox[{"Row", "[", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{"\"\<Hop Rate A\>\"", ",", "\"\< = \>\"", ",", 
+                    RowBox[{"ToString", "[", "hopRateA", "]"}]}], "}"}], ",", 
+                  
+                  RowBox[{"Alignment", "\[Rule]", " ", "Center"}]}], "]"}], 
+                ",", 
+                RowBox[{"Row", "[", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{"\"\<, Hop Rate B\>\"", ",", "\"\< = \>\"", ",", 
+                    RowBox[{"ToString", "[", "hopRateB", "]"}]}], "}"}], ",", 
+                  
+                  RowBox[{"Alignment", "\[Rule]", " ", "Center"}]}], "]"}], 
+                ",", "\[IndentingNewLine]", 
+                RowBox[{"Row", "[", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{
+                   "\"\<, Reaction rate A \[LongRightArrow] B\>\"", ",", 
+                    "\"\< = \>\"", ",", 
+                    RowBox[{"ToString", "[", "rxnRate", "]"}]}], "}"}], ",", 
+                  RowBox[{"Alignment", "\[Rule]", " ", "Center"}]}], "]"}]}], 
+               "\[IndentingNewLine]", "}"}], "]"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"Row", "[", 
+              RowBox[{"{", "\[IndentingNewLine]", 
+               RowBox[{
+                RowBox[{"Row", "[", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{
+                   "\"\<Exchange probability\>\"", ",", "\"\< = \>\"", ",", 
+                    RowBox[{"ToString", "[", "pex", "]"}]}], "}"}], ",", 
+                  RowBox[{"Alignment", "\[Rule]", " ", "Center"}]}], "]"}], 
+                ",", 
+                RowBox[{"Row", "[", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{
+                   "\"\<, Hop Exchange Rate\>\"", ",", "\"\< = \>\"", ",", 
+                    RowBox[{"ToString", "[", "hopRateEx", "]"}]}], "}"}], ",", 
+                  RowBox[{"Alignment", "\[Rule]", " ", "Center"}]}], "]"}], 
+                ","}], "\[IndentingNewLine]", "}"}], "]"}]}], 
+            "\[IndentingNewLine]", "\[IndentingNewLine]", "}"}], ",", 
+           RowBox[{"Alignment", "\[Rule]", "Center"}]}], "]"}]}], ",", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"UpdateInterval", "\[Rule]", " ", "0.01"}], ",", " ", 
+        RowBox[{"TrackedSymbols", "\[RuleDelayed]", 
+         RowBox[{"{", "}"}]}]}], "\[IndentingNewLine]", "\[IndentingNewLine]",
+        "]"}], "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}]}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}]], "Input",
+ CellChangeTimes->{{3.5968359253730392`*^9, 3.5968359509959183`*^9}, {
+   3.596836101294203*^9, 3.596836108178441*^9}, {3.59683626907616*^9, 
+   3.596836284162045*^9}, 3.5968363407462893`*^9, {3.596836863781907*^9, 
+   3.5968368830668907`*^9}, {3.596837025057968*^9, 3.596837027108054*^9}, {
+   3.596837751637824*^9, 3.596837817387865*^9}, {3.596837859546805*^9, 
+   3.596837922886765*^9}, {3.59683797265501*^9, 3.596838031338942*^9}, {
+   3.596838264478818*^9, 3.596838353281414*^9}, {3.596838402425892*^9, 
+   3.596838422031601*^9}, {3.596838452098482*^9, 3.596838468690571*^9}, {
+   3.59683853108888*^9, 3.5968387013683167`*^9}, {3.5968387662288933`*^9, 
+   3.596838794412912*^9}, {3.596838836881484*^9, 3.596838876757321*^9}, 
+   3.59683895303228*^9, {3.596838988869824*^9, 3.596839079619012*^9}, {
+   3.596839128823317*^9, 3.596839137934731*^9}, {3.5968392039010067`*^9, 
+   3.596839204223892*^9}, {3.596839352875556*^9, 3.5968393716002417`*^9}, {
+   3.596839420782598*^9, 3.596839516346964*^9}, {3.596839555753572*^9, 
+   3.596839629344701*^9}, {3.5968399207695827`*^9, 3.596839927882001*^9}, {
+   3.59683995914412*^9, 3.596840025668923*^9}, {3.596840070495099*^9, 
+   3.596840070829853*^9}, {3.596840251724277*^9, 3.596840317092246*^9}, {
+   3.5968403489613953`*^9, 3.5968404278144484`*^9}, {3.5968404645478563`*^9, 
+   3.596840520986854*^9}, {3.596840572731338*^9, 3.5968406420506983`*^9}, {
+   3.596840730895859*^9, 3.596840747894781*^9}, {3.596840784726727*^9, 
+   3.596840787550531*^9}, {3.596840831311187*^9, 3.596840847454307*^9}, 
+   3.596840895290492*^9, 3.596841139616283*^9, {3.596841231676764*^9, 
+   3.5968412432800503`*^9}, 3.596841908041782*^9, 3.596841951327291*^9, {
+   3.596846077126828*^9, 3.596846138730321*^9}, 3.596846413248651*^9, {
+   3.5968464613066807`*^9, 3.596846465384259*^9}, {3.596846672180677*^9, 
+   3.596846676116138*^9}, {3.5968467389124327`*^9, 3.596846740326611*^9}, {
+   3.596847020219864*^9, 3.59684702379493*^9}, 3.596847466158824*^9, {
+   3.596847596061365*^9, 3.596847600303376*^9}, {3.596847666243312*^9, 
+   3.596847667779066*^9}, 3.596850633030993*^9, {3.59685071512372*^9, 
+   3.5968507156480207`*^9}, {3.596855695496697*^9, 3.5968557001976213`*^9}, {
+   3.596855751789714*^9, 3.596855863505805*^9}, {3.596856905309827*^9, 
+   3.596856911732418*^9}, {3.5968569496995907`*^9, 3.596856955115078*^9}, {
+   3.596857049879952*^9, 3.5968571039252*^9}, {3.596857179328936*^9, 
+   3.596857180319545*^9}, {3.596857326882736*^9, 3.596857360288601*^9}, {
+   3.596857403666925*^9, 3.596857481927186*^9}, {3.596857548919758*^9, 
+   3.596857553070326*^9}, {3.596859979608192*^9, 3.596859998126532*^9}, {
+   3.596863477714696*^9, 3.596863499960372*^9}, {3.596863538568674*^9, 
+   3.596863539463869*^9}, {3.597157984696995*^9, 3.597157987755122*^9}, {
+   3.5971580454192867`*^9, 3.5971581420714912`*^9}, {3.5971583533676453`*^9, 
+   3.5971583553580523`*^9}, {3.597158555709104*^9, 3.597158558970037*^9}, {
+   3.597158592998171*^9, 3.59715859649275*^9}, {3.6402008789835787`*^9, 
+   3.640200921164153*^9}, {3.640201512932435*^9, 3.640201568481997*^9}, 
+   3.640204745112474*^9, {3.640204812574597*^9, 3.64020481618719*^9}, {
+   3.640208932498872*^9, 3.640208939794652*^9}, {3.640209103470687*^9, 
+   3.64020913898588*^9}, 3.640209192914843*^9, {3.6408022764352508`*^9, 
+   3.6408023041408997`*^9}, {3.6408049104842777`*^9, 3.640804910796278*^9}, {
+   3.640804947643543*^9, 3.640805050478923*^9}, {3.6408050882933893`*^9, 
+   3.6408050984178076`*^9}, {3.640805172627138*^9, 3.6408051833287563`*^9}, {
+   3.6408052345748463`*^9, 3.640805238506054*^9}, {3.640805269050907*^9, 
+   3.640805291109346*^9}, {3.6408053239162035`*^9, 3.6408054260495825`*^9}, 
+   3.6408055059217234`*^9, {3.640805593297477*^9, 3.640805596776283*^9}, {
+   3.64080574912615*^9, 3.6408057561617627`*^9}, 3.640805827531888*^9, 
+   3.6408059043152227`*^9, 3.640806012485813*^9, {3.6408060429214664`*^9, 
+   3.640806043311467*^9}, {3.640806144009644*^9, 3.6408061483932514`*^9}, {
+   3.640806236970207*^9, 3.6408062608070493`*^9}, {3.640806527037117*^9, 
+   3.640806547831953*^9}, 3.6408070834600945`*^9, {3.6408071395421925`*^9, 
+   3.640807140899395*^9}, {3.640807989726886*^9, 3.640808001770107*^9}, 
+   3.6408084298036585`*^9, {3.640808527881031*^9, 3.64080856177989*^9}, {
+   3.640808613384781*^9, 3.640808627471606*^9}, {3.640809518420371*^9, 
+   3.6408095187323713`*^9}, {3.640809550338027*^9, 3.640809564050451*^9}, {
+   3.640809601084916*^9, 3.640809787427243*^9}, {3.640810323646985*^9, 
+   3.64081034366182*^9}, {3.640810388137498*^9, 3.640810419992754*^9}, {
+   3.6408104596480236`*^9, 3.6408104629240294`*^9}, {3.6408105767730293`*^9, 
+   3.640810579284634*^9}, {3.6408106434163465`*^9, 3.640810670466794*^9}, {
+   3.640810714037671*^9, 3.640810738342513*^9}, {3.64081086183233*^9, 
+   3.6408108682283416`*^9}, {3.640811096799943*^9, 3.6408111003723493`*^9}, {
+   3.640817544547484*^9, 3.64081756923218*^9}, {3.640817641317712*^9, 
+   3.640817730272313*^9}, {3.6408177878859253`*^9, 3.6408178505843782`*^9}, {
+   3.6408179263342733`*^9, 3.6408179871855497`*^9}, {3.640818017504137*^9, 
+   3.6408180967713118`*^9}, {3.640818183273025*^9, 3.6408183444586983`*^9}, {
+   3.640818475860849*^9, 3.640818503595394*^9}, {3.640818608393991*^9, 
+   3.6408186132979517`*^9}, {3.640862150439385*^9, 3.640862475625128*^9}, {
+   3.640862511574987*^9, 3.640862549593487*^9}, {3.640862652839445*^9, 
+   3.640862714443005*^9}, {3.640862899301833*^9, 3.640862926868793*^9}, 
+   3.640863203241325*^9, {3.640863795269641*^9, 3.64086379624673*^9}, 
+   3.6409514439830217`*^9, {3.64095153051709*^9, 3.6409515598574057`*^9}, {
+   3.6409516830150957`*^9, 3.6409516854848547`*^9}, {3.6409517959005117`*^9, 
+   3.640951892987122*^9}, {3.64095192390438*^9, 3.640952002495496*^9}, {
+   3.64095204677509*^9, 3.6409520537541122`*^9}, {3.640952090422476*^9, 
+   3.640952194188748*^9}, 3.640952266396393*^9, {3.6409523322747173`*^9, 
+   3.6409523480910482`*^9}, {3.640952380062172*^9, 3.6409524249681177`*^9}, {
+   3.640952472072048*^9, 3.640952537220931*^9}, {3.6409525972924757`*^9, 
+   3.640952606532596*^9}, 3.640952676368765*^9, {3.640956920437441*^9, 
+   3.6409569658845987`*^9}, {3.640960687588418*^9, 3.6409606991488857`*^9}, {
+   3.640960770653714*^9, 3.640960815628518*^9}, {3.640960882266054*^9, 
+   3.640960920935853*^9}, {3.6409610547234592`*^9, 3.640961146115643*^9}, 
+   3.640961188058639*^9, {3.640961336779747*^9, 3.640961397188368*^9}, {
+   3.640961453323489*^9, 3.640961453395755*^9}, {3.64096154628225*^9, 
+   3.640961693054706*^9}, {3.6409617485471067`*^9, 3.6409618240304327`*^9}, {
+   3.640961858754561*^9, 3.6409619310000067`*^9}, {3.640963218038567*^9, 
+   3.64096340918397*^9}, {3.640963826626684*^9, 3.640963827585326*^9}, {
+   3.640963871690723*^9, 3.640963873568324*^9}, {3.640964017496113*^9, 
+   3.640964017578846*^9}, {3.6409641880357437`*^9, 3.640964192418285*^9}, 
+   3.640964542481613*^9, {3.6409683113228493`*^9, 3.640968623150058*^9}, {
+   3.640968671730401*^9, 3.640968717053961*^9}, {3.640968748063305*^9, 
+   3.640968748393166*^9}, {3.6409688238825283`*^9, 3.640968829538069*^9}, {
+   3.640968958988111*^9, 3.640968960456214*^9}, {3.640969023577732*^9, 
+   3.6409690888611937`*^9}, {3.640973387239971*^9, 3.640973416066575*^9}, {
+   3.640973447869184*^9, 3.640973495978138*^9}, {3.640973607873817*^9, 
+   3.64097363978082*^9}, {3.69715505987158*^9, 3.6971550631745157`*^9}}]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Execute the Main Program", "Subtitle",
+ CellChangeTimes->{{3.596831824295456*^9, 3.596831827206822*^9}, {
+  3.6971550910592213`*^9, 3.697155105154852*^9}}],
+
+Cell[BoxData[
+ RowBox[{"main", "[", "]"}]], "Input",
+ CellChangeTimes->{{3.697155086258238*^9, 3.6971550886311207`*^9}}]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1440, 855},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+Magnification:>1.2 Inherited,
+FrontEndVersion->"10.3 for Mac OS X x86 (32-bit, 64-bit Kernel) (October 9, \
+2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[579, 22, 373, 5, 110, "Title"],
+Cell[955, 29, 798, 12, 60, "Text"],
+Cell[1756, 43, 347, 8, 84, "Text"],
+Cell[CellGroupData[{
+Cell[2128, 55, 134, 2, 60, "Subtitle"],
+Cell[CellGroupData[{
+Cell[2287, 61, 102, 1, 91, "Section"],
+Cell[2392, 64, 144, 2, 51, "Text"],
+Cell[2539, 68, 214, 4, 50, "Input"],
+Cell[2756, 74, 102, 1, 51, "Text"],
+Cell[2861, 77, 165, 4, 50, "Input"],
+Cell[3029, 83, 130, 2, 51, "Text"],
+Cell[3162, 87, 191, 4, 50, "Input"],
+Cell[3356, 93, 245, 5, 50, "Input"],
+Cell[3604, 100, 288, 7, 50, "Input"],
+Cell[3895, 109, 97, 1, 51, "Text"],
+Cell[3995, 112, 328, 6, 50, "Input"],
+Cell[4326, 120, 234, 4, 51, "Text"],
+Cell[4563, 126, 365, 6, 50, "Input"],
+Cell[4931, 134, 292, 5, 50, "Input"],
+Cell[5226, 141, 274, 6, 50, "Input"]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[5537, 152, 104, 1, 69, "Section"],
+Cell[5644, 155, 204, 4, 46, "Text"],
+Cell[5851, 161, 290, 6, 50, "Input"],
+Cell[6144, 169, 213, 5, 51, "Text"],
+Cell[6360, 176, 259, 5, 50, "Input"],
+Cell[6622, 183, 164, 4, 50, "Input"],
+Cell[6789, 189, 210, 4, 50, "Input"],
+Cell[7002, 195, 461, 8, 51, "Text"],
+Cell[7466, 205, 414, 7, 50, "Input"]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[7917, 217, 156, 2, 69, "Section"],
+Cell[CellGroupData[{
+Cell[8098, 223, 144, 2, 75, "Subsection"],
+Cell[8245, 227, 111, 1, 51, "Text"],
+Cell[8359, 230, 189, 4, 50, "Input"],
+Cell[8551, 236, 128, 1, 51, "Text"],
+Cell[8682, 239, 194, 4, 50, "Input"],
+Cell[8879, 245, 121, 3, 50, "Input"],
+Cell[9003, 250, 143, 3, 50, "Input"],
+Cell[9149, 255, 141, 3, 50, "Input"],
+Cell[9293, 260, 169, 2, 51, "Text"],
+Cell[9465, 264, 477, 9, 50, "Input"],
+Cell[9945, 275, 545, 12, 50, "Input"],
+Cell[10493, 289, 447, 10, 50, "Input"],
+Cell[10943, 301, 107, 1, 51, "Text"],
+Cell[11053, 304, 199, 4, 50, "Input"]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[11289, 313, 92, 1, 60, "Subsection"],
+Cell[11384, 316, 124, 1, 51, "Text"],
+Cell[11511, 319, 377, 10, 50, "Input"],
+Cell[11891, 331, 123, 1, 51, "Text"],
+Cell[12017, 334, 382, 7, 50, "Input"],
+Cell[12402, 343, 186, 5, 50, "Input"],
+Cell[12591, 350, 140, 4, 50, "Input"],
+Cell[12734, 356, 163, 4, 50, "Input"],
+Cell[12900, 362, 113, 1, 51, "Text"],
+Cell[13016, 365, 374, 10, 50, "Input"]
+}, Closed]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[13439, 381, 96, 1, 69, "Section"],
+Cell[CellGroupData[{
+Cell[13560, 386, 101, 1, 90, "Subsection"],
+Cell[CellGroupData[{
+Cell[13686, 391, 385, 10, 72, "Subsubsection"],
+Cell[14074, 403, 1251, 29, 338, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[15362, 437, 433, 10, 72, "Subsubsection"],
+Cell[15798, 449, 1747, 38, 1419, "Input"]
+}, Closed]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[17594, 493, 163, 2, 72, "Subsection"],
+Cell[CellGroupData[{
+Cell[17782, 499, 552, 12, 123, "Subsubsection"],
+Cell[18337, 513, 3912, 78, 1658, "Input"]
+}, Closed]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[22298, 597, 148, 2, 72, "Subsection"],
+Cell[CellGroupData[{
+Cell[22471, 603, 588, 12, 123, "Subsubsection"],
+Cell[23062, 617, 1497, 34, 1008, "Input"]
+}, Closed]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[24608, 657, 122, 1, 72, "Subsection"],
+Cell[CellGroupData[{
+Cell[24755, 662, 723, 14, 268, "Subsubsection"],
+Cell[25481, 678, 7641, 171, 5137, "Input"]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[33159, 854, 478, 13, 139, "Subsubsection"],
+Cell[33640, 869, 9564, 188, 6256, "Input"]
+}, Closed]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[43253, 1063, 103, 1, 72, "Subsection"],
+Cell[CellGroupData[{
+Cell[43381, 1068, 615, 16, 187, "Subsubsection"],
+Cell[43999, 1086, 6012, 125, 3028, "Input"]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[50048, 1216, 414, 12, 97, "Subsubsection"],
+Cell[50465, 1230, 4052, 82, 1358, "Input"]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[54554, 1317, 462, 13, 97, "Subsubsection"],
+Cell[55019, 1332, 2637, 48, 882, "Input"]
+}, Closed]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[57705, 1386, 162, 2, 72, "Subsection"],
+Cell[CellGroupData[{
+Cell[57892, 1392, 470, 12, 123, "Subsubsection"],
+Cell[58365, 1406, 1224, 25, 642, "Input"]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[59626, 1436, 469, 12, 97, "Subsubsection"],
+Cell[60098, 1450, 1290, 27, 700, "Input"]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[61425, 1482, 520, 13, 97, "Subsubsection"],
+Cell[61948, 1497, 1148, 24, 642, "Input"]
+}, Closed]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[63145, 1527, 161, 2, 72, "Subsection"],
+Cell[CellGroupData[{
+Cell[63331, 1533, 381, 11, 123, "Subsubsection"],
+Cell[63715, 1546, 5606, 118, 2314, "Input"]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[69358, 1669, 426, 11, 97, "Subsubsection"],
+Cell[69787, 1682, 2244, 43, 700, "Input"]
+}, Closed]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[72080, 1731, 145, 2, 72, "Subsection"],
+Cell[CellGroupData[{
+Cell[72250, 1737, 264, 8, 123, "Subsubsection"],
+Cell[72517, 1747, 364, 8, 147, "Input"],
+Cell[72884, 1757, 912, 19, 579, "Input"]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[73833, 1781, 385, 12, 97, "Subsubsection"],
+Cell[74221, 1795, 418, 8, 147, "Input"],
+Cell[74642, 1805, 1475, 31, 924, "Input"]
+}, Closed]]
+}, Closed]]
+}, Closed]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[76190, 1844, 98, 1, 60, "Subtitle"],
+Cell[76291, 1847, 153, 3, 61, "Text"],
+Cell[76447, 1852, 15468, 269, 1754, "Input"]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[91952, 2126, 161, 2, 60, "Subtitle"],
+Cell[92116, 2130, 120, 2, 35, "Input"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
